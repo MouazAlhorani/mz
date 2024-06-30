@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as df;
+import 'package:mz_tak_app/controllers/remindsItemsProvider.dart';
+import 'package:mz_tak_app/controllers/requestpost.dart';
 import 'package:mz_tak_app/models/reminder_model.dart';
 import 'package:mz_tak_app/pages/reminder/reminds_edit.dart';
+import 'package:provider/provider.dart';
 
 class ReminderCard extends StatefulWidget {
   const ReminderCard(
@@ -65,7 +68,21 @@ class _ReminderCardState extends State<ReminderCard> {
                               context, RemindsEdit.routename,
                               arguments: widget.data);
                         },
-                        child: Text("تعديل"))
+                        child: Text("تعديل")),
+                    TextButton(
+                        onPressed: () async {
+                          await requestdelete(
+                              endpoint: "reminds/delete",
+                              body: {"id": widget.data.id.toString()});
+                          context
+                              .read<RemindsListProvider>()
+                              .delete(id: widget.data.id);
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "حذف",
+                          style: TextStyle(color: Colors.red),
+                        ))
                   ],
                 ),
               );

@@ -190,7 +190,7 @@ class _RemindsEditState extends State<RemindsEdit> {
                             if (_formkey.currentState!.validate()) {
                               if (widget.editmode) {
                                 var resp = await requestupdate(
-                                    endpoint: "updateremind",
+                                    endpoint: "reminds/update",
                                     body: {
                                       "id": widget.data!.id.toString(),
                                       "remindname":
@@ -207,7 +207,6 @@ class _RemindsEditState extends State<RemindsEdit> {
                                       "type": autotype ? "auto" : "man",
                                       "notifi": notifi ? "1" : "0"
                                     });
-                                context.read<testProvider>().count = 2;
                                 if (resp != null) {
                                   context
                                       .read<RemindsListProvider>()
@@ -218,7 +217,7 @@ class _RemindsEditState extends State<RemindsEdit> {
                                 }
                               } else {
                                 var resp = await requestpost(
-                                    endpoint: "addremind",
+                                    endpoint: "reminds/add",
                                     body: {
                                       "remindname":
                                           editelements[0].controller.text,

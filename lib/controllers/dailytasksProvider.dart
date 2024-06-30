@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mz_tak_app/models/dailytask_model.dart';
+import 'package:mz_tak_app/models/help_model.dart';
 import 'package:mz_tak_app/models/reminder_model.dart';
 
-class RemindsListProvider extends ChangeNotifier {
-  List<ReminderModel> _list = [];
+class DailyTasksListProvider extends ChangeNotifier {
+  List<DailyTaskModel> _list = [];
   set list(data) {
     _list = data;
   }
@@ -22,5 +24,5 @@ class RemindsListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<ReminderModel> get list => _list;
+  List<DailyTaskModel> get list => _list;
 }

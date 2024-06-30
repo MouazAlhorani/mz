@@ -35,3 +35,19 @@ Future? requestupdate({endpoint, params, body}) async {
     print(e);
   }
 }
+
+Future? requestdelete({endpoint, params, body}) async {
+  try {
+    http.Response resp = await http.delete(
+        Uri.http(mainapipath, "/mz/api/$endpoint/", params),
+        body: body);
+
+    if (resp.statusCode == 200) {
+      return jsonDecode(utf8.decode(resp.bodyBytes))['result'];
+    } else {
+      return null;
+    }
+  } catch (e) {
+    print(e);
+  }
+}

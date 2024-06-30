@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mz_tak_app/constant.dart';
 import 'package:mz_tak_app/controllers/requestpost.dart';
+import 'package:mz_tak_app/controllers/shared_pref.dart';
 import 'package:mz_tak_app/models/textfield_model.dart';
 import 'package:mz_tak_app/models/userinfo_model.dart';
 import 'package:mz_tak_app/pages/homepage.dart';
 import 'package:mz_tak_app/widgets/logo.dart';
 import 'package:mz_tak_app/widgets/textfield_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LogInPage extends StatefulWidget {
   LogInPage({super.key});
@@ -100,8 +102,10 @@ class _LogInPageState extends State<LogInPage> {
 
                                     if (resp != null) {
                                       if (resp != "UNAuthorized") {
-                                        userinfo =
-                                            UserInfoModel.fromdata(data: resp);
+                                        await setuserinfo(data: [
+                                          loginelements[0].controller.text
+                                        ]);
+
                                         Navigator.of(context)
                                             .pushReplacementNamed(
                                                 HomePage.routename);

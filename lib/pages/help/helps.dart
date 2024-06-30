@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:mz_tak_app/controllers/remindsItemsProvider.dart';
+import 'package:mz_tak_app/controllers/helpsItemsProvider.dart';
 import 'package:mz_tak_app/controllers/requestpost.dart';
-import 'package:mz_tak_app/models/reminder_model.dart';
-import 'package:mz_tak_app/pages/reminder/reminds_edit.dart';
-import 'package:mz_tak_app/widgets/reminder_card.dart';
+import 'package:mz_tak_app/models/help_model.dart';
+import 'package:mz_tak_app/pages/help/helps_edit.dart';
+import 'package:mz_tak_app/widgets/help_card.dart';
 import 'package:provider/provider.dart';
 
-class Reminds extends StatelessWidget {
-  Reminds({super.key});
-  static const String routename = "/homepage/reminds";
+class Helps extends StatelessWidget {
+  Helps({super.key});
+  static const String routename = "/homepage/helps";
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: requestpost(endpoint: 'reminds/getdata'),
+      future: requestpost(endpoint: 'helps/getdata'),
       builder: (context, snaps) {
         if (snaps.connectionState == ConnectionState.waiting) {
           return Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -22,42 +21,42 @@ class Reminds extends StatelessWidget {
             body: Center(child: Text("حصل خطأ ما")),
           );
         } else {
-          List<ReminderModel> mydata = [];
+          List<HelpModel> mydata = [];
           for (var i in snaps.data) {
-            mydata.add(ReminderModel.fromdata(data: i));
+            mydata.add(HelpModel.fromdata(data: i));
           }
-          context.read<RemindsListProvider>().list = mydata;
-          return Rpage();
+          context.read<HelpsListProvider>().list = mydata;
+          return Hpage();
         }
       },
     );
   }
 }
 
-class Rpage extends StatefulWidget {
-  Rpage({super.key});
+class Hpage extends StatefulWidget {
+  Hpage({super.key});
 
   @override
-  State<Rpage> createState() => _RpageState();
+  State<Hpage> createState() => _HpageState();
 }
 
-class _RpageState extends State<Rpage> {
+class _HpageState extends State<Hpage> {
   double radius = 0;
   @override
   Widget build(BuildContext context) {
-    List<ReminderModel>? localdata = context.watch<RemindsListProvider>().list;
+    List<HelpModel>? localdata = context.watch<HelpsListProvider>().list;
 
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("التذكير"),
+          title: Text("المساعد"),
           centerTitle: true,
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.transparent,
           onPressed: () {
-            Navigator.pushNamed(context, RemindsEdit.routename);
+            Navigator.pushNamed(context, HelpsEdit.routename);
           },
           child: MouseRegion(
             onHover: (x) => setState(() {
@@ -95,7 +94,9 @@ class _RpageState extends State<Rpage> {
                           i.search = true;
                         });
                       } else {
-                        if (i.name.toLowerCase().contains(x.toLowerCase())) {
+                        if (i.helpname
+                            .toLowerCase()
+                            .contains(x.toLowerCase())) {
                           setState(() {
                             i.search = true;
                           });
@@ -118,23 +119,12 @@ class _RpageState extends State<Rpage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ...localdata
-                          .where((element) => element.alert && element.search)
-                          .map((e) => ReminderCard(
+                          .where((element) => element.search)
+                          .map((e) => HelpCard(
                                 data: e,
-                                name: e.name,
-                                expire: e.expire,
-                                alert: e.alert,
-                                timetoexpire: e.timetoexpire,
+                                helpname: e.helpname,
+                                helpdesc: e.helpdesc,
                               )),
-                      ...localdata
-                          .where((element) => !element.alert && element.search)
-                          .map((e) => ReminderCard(
-                                data: e,
-                                name: e.name,
-                                expire: e.expire,
-                                alert: e.alert,
-                                timetoexpire: e.timetoexpire,
-                              ))
                     ],
                   ),
                 ),

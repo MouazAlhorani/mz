@@ -11,7 +11,8 @@ class ReminderModel {
       required this.remindbefor,
       this.timetoexpire,
       this.alert = false,
-      this.notifi = true});
+      this.notifi = true,
+      this.search = true});
 
   factory ReminderModel.fromdata({data}) {
     return ReminderModel(
@@ -26,7 +27,8 @@ class ReminderModel {
         remindbefor: data['remindbefor'],
         timetoexpire: data['remainingdays'],
         alert: data['alertstatus'],
-        notifi: data['notification']);
+        notifi: data['notification'],
+        search: true);
   }
 
   final String? url, desc, type;
@@ -34,5 +36,5 @@ class ReminderModel {
   final String? timetoexpire;
   final String name;
   final DateTime? expire;
-  bool alert, notifi;
+  bool alert, notifi, search;
 }

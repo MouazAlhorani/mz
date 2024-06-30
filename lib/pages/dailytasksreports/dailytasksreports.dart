@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:mz_tak_app/controllers/remindsItemsProvider.dart';
+import 'package:mz_tak_app/controllers/dailytasksreportsProvider.dart';
 import 'package:mz_tak_app/controllers/requestpost.dart';
-import 'package:mz_tak_app/models/reminder_model.dart';
-import 'package:mz_tak_app/pages/reminder/reminds_edit.dart';
-import 'package:mz_tak_app/widgets/reminder_card.dart';
+import 'package:mz_tak_app/models/dailytasksreport_model.dart';
+import 'package:mz_tak_app/pages/dailytasksreports/dailytasksreports_edit.dart';
+import 'package:mz_tak_app/widgets/dailytasksreport_card.dart';
 import 'package:provider/provider.dart';
 
-class Reminds extends StatelessWidget {
-  Reminds({super.key});
-  static const String routename = "/homepage/reminds";
+class DailyTasksReports extends StatelessWidget {
+  DailyTasksReports({super.key});
+  static const String routename = "/homepage/dailytasksreports";
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: requestpost(endpoint: 'reminds/getdata'),
+      future: requestpost(endpoint: 'dailytasksreports/getdata'),
       builder: (context, snaps) {
         if (snaps.connectionState == ConnectionState.waiting) {
           return Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -22,42 +21,43 @@ class Reminds extends StatelessWidget {
             body: Center(child: Text("حصل خطأ ما")),
           );
         } else {
-          List<ReminderModel> mydata = [];
+          List<DailyTasksReportModel> mydata = [];
           for (var i in snaps.data) {
-            mydata.add(ReminderModel.fromdata(data: i));
+            mydata.add(DailyTasksReportModel.fromdata(data: i));
           }
-          context.read<RemindsListProvider>().list = mydata;
-          return Rpage();
+          context.read<DailyTasksReportsListProvider>().list = mydata;
+          return DTrpage();
         }
       },
     );
   }
 }
 
-class Rpage extends StatefulWidget {
-  Rpage({super.key});
+class DTrpage extends StatefulWidget {
+  DTrpage({super.key});
 
   @override
-  State<Rpage> createState() => _RpageState();
+  State<DTrpage> createState() => _DTrpageState();
 }
 
-class _RpageState extends State<Rpage> {
+class _DTrpageState extends State<DTrpage> {
   double radius = 0;
   @override
   Widget build(BuildContext context) {
-    List<ReminderModel>? localdata = context.watch<RemindsListProvider>().list;
+    List<DailyTasksReportModel>? localdata =
+        context.watch<DailyTasksReportsListProvider>().list;
 
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("التذكير"),
+          title: Text("التقارير اليومية"),
           centerTitle: true,
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.transparent,
           onPressed: () {
-            Navigator.pushNamed(context, RemindsEdit.routename);
+            Navigator.pushNamed(context, DailyTasksReportsEdit.routename);
           },
           child: MouseRegion(
             onHover: (x) => setState(() {
@@ -95,7 +95,9 @@ class _RpageState extends State<Rpage> {
                           i.search = true;
                         });
                       } else {
-                        if (i.name.toLowerCase().contains(x.toLowerCase())) {
+                        if (i.createby
+                            .toLowerCase()
+                            .contains(x.toLowerCase())) {
                           setState(() {
                             i.search = true;
                           });
@@ -118,23 +120,14 @@ class _RpageState extends State<Rpage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ...localdata
-                          .where((element) => element.alert && element.search)
-                          .map((e) => ReminderCard(
+                          .where((element) => element.search)
+                          .map((e) => DailyTasksReportCard(
                                 data: e,
-                                name: e.name,
-                                expire: e.expire,
-                                alert: e.alert,
-                                timetoexpire: e.timetoexpire,
+                                report: e.report,
+                                createby: e.createby,
+                                reportdate: e.reportdate,
+                                createby_id: e.createby_id,
                               )),
-                      ...localdata
-                          .where((element) => !element.alert && element.search)
-                          .map((e) => ReminderCard(
-                                data: e,
-                                name: e.name,
-                                expire: e.expire,
-                                alert: e.alert,
-                                timetoexpire: e.timetoexpire,
-                              ))
                     ],
                   ),
                 ),

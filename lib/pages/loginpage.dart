@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mz_tak_app/constant.dart';
 import 'package:mz_tak_app/controllers/requestpost.dart';
 import 'package:mz_tak_app/controllers/shared_pref.dart';
@@ -44,10 +46,12 @@ class _LogInPageState extends State<LogInPage> {
   void dispose() {
     for (var i in loginelements) {
       i.controller.dispose();
+      errormsg = null;
     }
     super.dispose();
   }
 
+  String? errormsg;
   @override
   Widget build(BuildContext context) {
     loginelements[1].suffixFunction = () {
@@ -107,18 +111,31 @@ class _LogInPageState extends State<LogInPage> {
                                           loginelements[0].controller.text,
                                           resp['fullname']
                                         ]);
-                                        print(userinfosharedpref!
-                                            .getStringList("userinfo"));
 
                                         Navigator.of(context)
                                             .pushReplacementNamed(
                                                 HomePage.routename);
+                                        errormsg = null;
+                                      } else {
+                                        setState(() {
+                                          errormsg =
+                                              "اسم المستخدم او كلمة المرور غير صحيحة";
+                                        });
                                       }
-                                    } else {}
+                                    } else {
+                                      setState(() {
+                                        errormsg =
+                                            "اسم المستخدم او كلمة المرور غير صحيحة";
+                                      });
+                                    }
                                   }
                                 },
                                 icon: Icon(Icons.arrow_back_ios),
-                                label: Text("تسجيل الدخول"))
+                                label: Text("تسجيل الدخول")),
+                            SizedBox(width: 300, child: Divider()),
+                            Visibility(
+                                visible: errormsg != null,
+                                child: Text(errormsg.toString()))
                           ],
                         ),
                       ),

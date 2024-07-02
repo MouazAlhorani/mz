@@ -70,7 +70,9 @@ class _HomePageState extends State<HomePage> {
                   Visibility(
                       visible: logouthover,
                       child: Text(
-                        userinfosharedpref != null
+                        userinfosharedpref != null &&
+                                userinfosharedpref!.getStringList("userinfo") !=
+                                    null
                             ? userinfosharedpref!.getStringList("userinfo")![2]
                             : "",
                         style: GoogleFonts.elMessiri(fontSize: 20),

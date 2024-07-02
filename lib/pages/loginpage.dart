@@ -90,6 +90,45 @@ class _LogInPageState extends State<LogInPage> {
                                   suffixFunction: e.suffixFunction,
                                   validate: e.validate,
                                   obscuretext: e.obscuretext,
+                                  submitted: (x) async {
+                                    if (_formkey.currentState!.validate()) {
+                                      var resp = await requestpost(
+                                          endpoint: "auth",
+                                          body: {
+                                            "username": loginelements[0]
+                                                .controller
+                                                .text,
+                                            "password": loginelements[1]
+                                                .controller
+                                                .text,
+                                          });
+
+                                      if (resp != null) {
+                                        if (resp != "UNAuthorized") {
+                                          await setuserinfo(data: [
+                                            resp['id'].toString(),
+                                            loginelements[0].controller.text,
+                                            resp['fullname']
+                                          ]);
+
+                                          Navigator.of(context)
+                                              .pushReplacementNamed(
+                                                  HomePage.routename);
+                                          errormsg = null;
+                                        } else {
+                                          setState(() {
+                                            errormsg =
+                                                "اسم المستخدم او كلمة المرور غير صحيحة";
+                                          });
+                                        }
+                                      } else {
+                                        setState(() {
+                                          errormsg =
+                                              "اسم المستخدم او كلمة المرور غير صحيحة";
+                                        });
+                                      }
+                                    }
+                                  },
                                 )),
                             SizedBox(width: 150, child: Divider()),
                             TextButton.icon(

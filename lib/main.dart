@@ -12,6 +12,8 @@ import 'package:mz_tak_app/pages/help/helps.dart';
 import 'package:mz_tak_app/pages/help/helps_edit.dart';
 import 'package:mz_tak_app/pages/homepage.dart';
 import 'package:mz_tak_app/pages/loginpage.dart';
+import 'package:mz_tak_app/pages/pbx/pbx_homepage.dart';
+import 'package:mz_tak_app/pages/pbx/realtime.dart';
 import 'package:mz_tak_app/pages/reminder/reminds.dart';
 import 'package:mz_tak_app/pages/reminder/reminds_edit.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +38,10 @@ class MzApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: Future(
-        () async => userinfosharedpref = await SharedPreferences.getInstance(),
+        () async {
+          userinfosharedpref = await SharedPreferences.getInstance();
+          print(userinfosharedpref!.getStringList("userinfo"));
+        },
       ),
       builder: (_, s) {
         return SafeArea(
@@ -45,8 +50,10 @@ class MzApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             initialRoute: '/',
             routes: {
-              '/': (context) =>
-                  userinfosharedpref != null ? LogInPage() : HomePage(),
+              '/': (context) => userinfosharedpref != null &&
+                      userinfosharedpref!.getStringList("userinfo") == null
+                  ? LogInPage()
+                  : HomePage(),
               HomePage.routename: (context) => HomePage(),
               Reminds.routename: (context) => Reminds(),
               RemindsEdit.routename: (context) => RemindsEdit(),
@@ -56,7 +63,9 @@ class MzApp extends StatelessWidget {
               DailyTasksEdit.routename: (context) => DailyTasksEdit(),
               DailyTasksReports.routename: (context) => DailyTasksReports(),
               DailyTasksReportsEdit.routename: (context) =>
-                  DailyTasksReportsEdit()
+                  DailyTasksReportsEdit(),
+              PBXHomePage.routename: (context) => PBXHomePage(),
+              RealTimePBX.routename: (context) => RealTimePBX()
             },
           ),
         );

@@ -4,7 +4,9 @@ import 'package:mz_tak_app/controllers/requestpost.dart';
 import 'package:mz_tak_app/models/dailytask_model.dart';
 import 'package:mz_tak_app/models/help_model.dart';
 import 'package:mz_tak_app/pages/dailytask/dailytasks_edit.dart';
+import 'package:mz_tak_app/widgets/appBarbackground.dart';
 import 'package:mz_tak_app/widgets/dailytasks_card.dart';
+import 'package:mz_tak_app/widgets/downlogo.dart';
 import 'package:provider/provider.dart';
 
 class DailyTasks extends StatelessWidget {
@@ -63,7 +65,19 @@ class _RpageState extends State<Dtpage> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
+          flexibleSpace: AppBarBackGround(),
           title: Text("المهام اليومية"),
+          actions: [
+            Hero(
+                tag: "المهام اليومية",
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.task,
+                    size: 35,
+                  ),
+                ))
+          ],
           centerTitle: true,
         ),
         floatingActionButton: FloatingActionButton(
@@ -143,6 +157,7 @@ class _RpageState extends State<Dtpage> {
                 ),
               ),
             ),
+            DownlogoMz()
           ],
         ),
       ),

@@ -3,6 +3,8 @@ import 'package:mz_tak_app/controllers/helpsItemsProvider.dart';
 import 'package:mz_tak_app/controllers/requestpost.dart';
 import 'package:mz_tak_app/models/help_model.dart';
 import 'package:mz_tak_app/pages/help/helps_edit.dart';
+import 'package:mz_tak_app/widgets/appBarbackground.dart';
+import 'package:mz_tak_app/widgets/downlogo.dart';
 import 'package:mz_tak_app/widgets/help_card.dart';
 import 'package:provider/provider.dart';
 
@@ -50,6 +52,7 @@ class _HpageState extends State<Hpage> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
+          flexibleSpace: AppBarBackGround(),
           title: Text("المساعد"),
           centerTitle: true,
         ),
@@ -130,6 +133,7 @@ class _HpageState extends State<Hpage> {
                 ),
               ),
             ),
+            DownlogoMz()
           ],
         ),
       ),

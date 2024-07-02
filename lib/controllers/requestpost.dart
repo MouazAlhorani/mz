@@ -5,7 +5,7 @@ import 'package:mz_tak_app/constant.dart';
 Future? requestpost({endpoint, params, body}) async {
   try {
     http.Response resp = await http.post(
-      Uri.http(mainapipath, "/mz/api/$endpoint/", params),
+      Uri.http(kmainapipath, "/mz/api/$endpoint/", params),
       body: body,
     );
 
@@ -22,7 +22,7 @@ Future? requestpost({endpoint, params, body}) async {
 Future? requestupdate({endpoint, params, body}) async {
   try {
     http.Response resp = await http.patch(
-      Uri.http(mainapipath, "/mz/api/$endpoint/", params),
+      Uri.http(kmainapipath, "/mz/api/$endpoint/", params),
       body: body,
     );
 
@@ -39,7 +39,7 @@ Future? requestupdate({endpoint, params, body}) async {
 Future? requestdelete({endpoint, params, body}) async {
   try {
     http.Response resp = await http.delete(
-        Uri.http(mainapipath, "/mz/api/$endpoint/", params),
+        Uri.http(kmainapipath, "/mz/api/$endpoint/", params),
         body: body);
 
     if (resp.statusCode == 200) {

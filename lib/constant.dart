@@ -1,1 +1,1 @@
-const String mainapipath = "192.168.30.20";
+const String kmainapipath = "192.168.30.20";

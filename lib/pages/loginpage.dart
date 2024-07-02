@@ -103,8 +103,12 @@ class _LogInPageState extends State<LogInPage> {
                                     if (resp != null) {
                                       if (resp != "UNAuthorized") {
                                         await setuserinfo(data: [
-                                          loginelements[0].controller.text
+                                          resp['id'].toString(),
+                                          loginelements[0].controller.text,
+                                          resp['fullname']
                                         ]);
+                                        print(userinfosharedpref!
+                                            .getStringList("userinfo"));
 
                                         Navigator.of(context)
                                             .pushReplacementNamed(

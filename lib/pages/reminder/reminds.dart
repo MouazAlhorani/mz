@@ -4,6 +4,8 @@ import 'package:mz_tak_app/controllers/remindsItemsProvider.dart';
 import 'package:mz_tak_app/controllers/requestpost.dart';
 import 'package:mz_tak_app/models/reminder_model.dart';
 import 'package:mz_tak_app/pages/reminder/reminds_edit.dart';
+import 'package:mz_tak_app/widgets/appBarbackground.dart';
+import 'package:mz_tak_app/widgets/downlogo.dart';
 import 'package:mz_tak_app/widgets/reminder_card.dart';
 import 'package:provider/provider.dart';
 
@@ -51,6 +53,7 @@ class _RpageState extends State<Rpage> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
+          flexibleSpace: AppBarBackGround(),
           title: Text("التذكير"),
           centerTitle: true,
         ),
@@ -140,6 +143,7 @@ class _RpageState extends State<Rpage> {
                 ),
               ),
             ),
+            DownlogoMz()
           ],
         ),
       ),

@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mz_tak_app/controllers/helpsItemsProvider.dart';
 import 'package:mz_tak_app/controllers/requestpost.dart';
 import 'package:mz_tak_app/models/dailytasksreport_model.dart';
@@ -39,20 +41,71 @@ class _DailyTasksReportCardState extends State<DailyTasksReportCard> {
                 title: Text(widget.createby),
                 content: Column(
                   children: [
-                    Row(
-                      children: [
-                        Text(widget.createby),
-                        Spacer(),
-                        Text(
-                          df.DateFormat("yyyy-MM-dd HH:mm")
-                              .format(widget.reportdate),
-                          textDirection: TextDirection.ltr,
-                        ),
-                      ],
+                    Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: Row(
+                        children: [
+                          Text(widget.createby),
+                          Spacer(),
+                          Text(
+                            df.DateFormat("yyyy-MM-dd HH:mm")
+                                .format(widget.reportdate),
+                            textDirection: TextDirection.ltr,
+                          ),
+                        ],
+                      ),
                     ),
                     Divider(),
-                    SelectableText(
-                      widget.report.toString(),
+                    Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: Column(
+                        children: [
+                          ...widget.report
+                              .toString()
+                              .split('\n')
+                              .map((e) => e.toLowerCase().contains("<done>")
+                                  ? Row(
+                                      children: [
+                                        Icon(
+                                          Icons.check,
+                                          color: Colors.green,
+                                        ),
+                                        Expanded(
+                                            child: Text(e.substring(
+                                                e.indexOf("<DONE>") + 6)))
+                                      ],
+                                    )
+                                  : e.toLowerCase().contains("<no>")
+                                      ? Row(
+                                          children: [
+                                            Icon(
+                                              Icons.check,
+                                              color: Colors.red,
+                                            ),
+                                            Expanded(
+                                                child: Text(e.substring(
+                                                    e.indexOf("<NO>") + 4)))
+                                          ],
+                                        )
+                                      : Row(
+                                          children: [
+                                            Expanded(
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    border: Border.all()),
+                                                child: Text(
+                                                  "**** $e",
+                                                  textDirection: e.contains(
+                                                          RegExp('r[A-Z]'))
+                                                      ? TextDirection.ltr
+                                                      : TextDirection.rtl,
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ))
+                        ],
+                      ),
                     ),
                   ],
                 ),

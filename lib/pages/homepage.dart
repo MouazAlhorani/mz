@@ -58,6 +58,9 @@ class _HomePageState extends State<HomePage> {
   bool logouthover = false;
   @override
   Widget build(BuildContext context) {
+    mainitems[0].visible = userinfosharedpref.getStringList("userinfo") != null
+        ? userinfosharedpref.getStringList("userinfo")![4] == "superadmin"
+        : false;
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -75,11 +78,10 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Visibility(
                       visible: logouthover,
-                      child: Text(userinfosharedpref != null &&
-                              userinfosharedpref!.getStringList("userinfo") !=
-                                  null
-                          ? userinfosharedpref!.getStringList("userinfo")![3]
-                          : "")),
+                      child: Text(
+                          userinfosharedpref.getStringList("userinfo") != null
+                              ? userinfosharedpref.getStringList("userinfo")![3]
+                              : "")),
                   MouseRegion(
                     onHover: (event) => setState(() {
                       logouthover = true;
@@ -89,13 +91,12 @@ class _HomePageState extends State<HomePage> {
                     }),
                     child: IconButton(
                         onPressed: () async {
-                          if (userinfosharedpref != null) {
-                            await requestpost(endpoint: "auth/logout", body: {
-                              "id": userinfosharedpref!
-                                  .getStringList("userinfo")![0]
-                            });
-                            userinfosharedpref!.remove("userinfo");
-                          }
+                          await requestpost(endpoint: "auth/logout", body: {
+                            "id":
+                                userinfosharedpref.getStringList("userinfo")![0]
+                          });
+                          userinfosharedpref.remove("userinfo");
+
                           Navigator.of(context).pushReplacementNamed('/');
                         },
                         icon: Icon(
@@ -122,6 +123,7 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 ...mainitems
                                     .where((element) =>
+                                        element.visible &&
                                         mainitems.indexOf(element).isEven)
                                     .map((e) => MainItemCard(
                                           label: e.label,
@@ -134,6 +136,7 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 ...mainitems
                                     .where((element) =>
+                                        element.visible &&
                                         mainitems.indexOf(element).isOdd)
                                     .map((e) => MainItemCard(
                                           label: e.label,

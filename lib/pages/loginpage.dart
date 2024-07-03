@@ -93,7 +93,7 @@ class _LogInPageState extends State<LogInPage> {
                                           password:
                                               loginelements[1].controller.text);
 
-                                      if (result['result'] == "permit") {
+                                      if (result['result'] == "UNAUTHORIZED") {
                                         setState(() {
                                           errormsg =
                                               "اسم المستخدم او كلمة المرور غير صحيحة";
@@ -104,13 +104,6 @@ class _LogInPageState extends State<LogInPage> {
                                           errormsg = "لا يمكن الوصول للمخدم";
                                         });
                                       } else {
-                                        await setuserinfo(data: [
-                                          result['result']['id'].toString(),
-                                          result['result']['username'],
-                                          result['result']['password'],
-                                          result['result']['fullname'],
-                                          result['result']['admin']
-                                        ]);
                                         Navigator.of(context)
                                             .pushReplacementNamed(
                                                 HomePage.routename);

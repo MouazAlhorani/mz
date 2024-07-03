@@ -45,15 +45,14 @@ class MzApp extends StatelessWidget {
       future: Future(
         () async {
           userinfosharedpref = await SharedPreferences.getInstance();
-          List<String>? userinfo =
-              userinfosharedpref!.getStringList("userinfo");
+          List<String>? userinfo = userinfosharedpref.getStringList("userinfo");
           if (userinfo != null) {
             Map result = await authFunction(
                 username: userinfo[1], password: userinfo[2]);
 
             if (result['result'] == "UNAUTHORIZED") {
               autologin = false;
-              userinfosharedpref!.remove("userinfo");
+              userinfosharedpref.remove("userinfo");
             } else if (result['result'] != "server_error") {
               autologin = true;
             }

@@ -82,13 +82,13 @@ class _AccountCardState extends State<AccountCard> {
                           requestpost(
                               endpoint: "accounts/logoutaccount",
                               body: {
-                                "id": userinfosharedpref!
+                                "id": userinfosharedpref
                                     .getStringList("userinfo")![0]
                               });
                           if (userinfosharedpref!
                                   .getStringList("userinfo")![0] ==
                               widget.data.id.toString()) {
-                            userinfosharedpref!.remove("userinfo");
+                            userinfosharedpref.remove("userinfo");
                             Navigator.pushNamed(context, '/');
                           } else {
                             Navigator.pop(context);

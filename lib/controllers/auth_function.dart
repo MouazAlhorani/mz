@@ -6,13 +6,16 @@ authFunction({username, password}) async {
     "username": username,
     "password": password,
   });
-  if (resp != null) {
+  if (resp != null && resp != "UNAUTHORIZED") {
     await setuserinfo(data: [
       resp['id'].toString(),
       resp['username'],
       resp['password'],
-      resp['fullname']
+      resp['fullname'],
+      resp['admin']
     ]);
+    return {"result": resp};
+  } else if (resp == "UNAUTHORIZED") {
     return {"result": resp};
   } else {
     return {"result": "server_error"};

@@ -123,11 +123,11 @@ class _ApageState extends State<Apage> {
             TextButton.icon(
                 onPressed: () async {
                   requestpost(endpoint: "accounts/logoutallaccounts", body: {
-                    "id": userinfosharedpref!.getStringList("userinfo")![0]
+                    "id": userinfosharedpref.getStringList("userinfo")![0]
                   });
                   for (var i in localdata) {
                     if (i.id.toString() !=
-                        userinfosharedpref!.getStringList("userinfo")![0]) {
+                        userinfosharedpref.getStringList("userinfo")![0]) {
                       for (var j in localdata) {
                         j.loginstatus = false;
                         context

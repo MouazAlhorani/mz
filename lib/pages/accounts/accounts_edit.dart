@@ -40,11 +40,6 @@ class _AccountsEditState extends State<AccountsEdit> {
       controller: TextEditingController(),
       label: "كلمة المرور",
       obscuretext: true,
-      validate: (x) {
-        if (x != null && x.trim().isEmpty) {
-          return "لا يمكن ان يكون حقل كلمة المرور فارغا";
-        }
-      },
     ),
     TextFieldModel(
       controller: TextEditingController(),
@@ -66,20 +61,28 @@ class _AccountsEditState extends State<AccountsEdit> {
     super.dispose();
   }
 
+  String selectedadmin = "user";
   Widget build(BuildContext context) {
-    String selectedadmin = admin[0];
-    editelements[3].validate = ((x) {
-      if (x != editelements[2].controller.text) {
-        return "كلمة المرور غير متطابقة";
-      }
-    });
     widget.data = ModalRoute.of(context)!.settings.arguments as AccountsModel?;
     if (widget.data != null) {
       widget.editmode = true;
+      editelements[2].validate = (x) {
+        if (widget.editmode) {
+          return null;
+        } else if (x != null && x.trim().isEmpty) {
+          return "لا يمكن ان يكون حقل كلمة المرور فارغا";
+        }
+      };
+      editelements[3].validate = ((x) {
+        if (x != editelements[2].controller.text) {
+          return "كلمة المرور غير متطابقة";
+        }
+      });
       if (widget.x == 0) {
         editelements[0].controller.text = widget.data!.username!;
         editelements[1].controller.text = widget.data!.fullname!;
         editelements[4].controller.text = widget.data!.email!;
+        selectedadmin = widget.data!.admin!;
       }
     }
     GlobalKey<FormState> _formkey = GlobalKey<FormState>();
@@ -110,10 +113,8 @@ class _AccountsEditState extends State<AccountsEdit> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("صلاحيات الحساب"),
-                          SizedBox(
-                            width: 20,
-                          ),
+                          const Text("صلاحيات الحساب"),
+                          const SizedBox(width: 20),
                           DropdownButton(
                               value: selectedadmin,
                               items: admin
@@ -128,11 +129,12 @@ class _AccountsEditState extends State<AccountsEdit> {
                               })
                         ],
                       ),
-                      SizedBox(width: 500, child: Divider()),
+                      const SizedBox(width: 500, child: Divider()),
                       TextButton.icon(
                           onPressed: () async {
                             if (_formkey.currentState!.validate()) {
                               if (widget.editmode) {
+                                print(editelements[2].controller.text);
                                 var resp = await requestupdate(
                                     endpoint: "accounts/update",
                                     body: {
@@ -145,9 +147,10 @@ class _AccountsEditState extends State<AccountsEdit> {
                                               .controller
                                               .text
                                               .trim()
-                                              .isEmpty
+                                              .isNotEmpty
                                           ? editelements[2].controller.text
                                           : "",
+                                      "admin": selectedadmin,
                                       "email": editelements[4].controller.text
                                     });
                                 if (resp != null) {
@@ -159,6 +162,7 @@ class _AccountsEditState extends State<AccountsEdit> {
                                               data: resp));
                                 }
                               } else {
+                                print(editelements[2].controller.text);
                                 var resp = await requestpost(
                                     endpoint: "accounts/add",
                                     body: {
@@ -168,6 +172,7 @@ class _AccountsEditState extends State<AccountsEdit> {
                                           editelements[1].controller.text,
                                       "password":
                                           editelements[2].controller.text,
+                                      "admin": selectedadmin,
                                       "email": editelements[4].controller.text
                                     });
 

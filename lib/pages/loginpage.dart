@@ -1,15 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:mz_tak_app/constant.dart';
-import 'package:mz_tak_app/controllers/requestpost.dart';
+import 'package:mz_tak_app/controllers/auth_function.dart';
 import 'package:mz_tak_app/controllers/shared_pref.dart';
 import 'package:mz_tak_app/models/textfield_model.dart';
-import 'package:mz_tak_app/models/userinfo_model.dart';
 import 'package:mz_tak_app/pages/homepage.dart';
 import 'package:mz_tak_app/widgets/logo.dart';
 import 'package:mz_tak_app/widgets/textfield_card.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LogInPage extends StatefulWidget {
   LogInPage({super.key});
@@ -92,40 +87,34 @@ class _LogInPageState extends State<LogInPage> {
                                   obscuretext: e.obscuretext,
                                   submitted: (x) async {
                                     if (_formkey.currentState!.validate()) {
-                                      var resp = await requestpost(
-                                          endpoint: "auth",
-                                          body: {
-                                            "username": loginelements[0]
-                                                .controller
-                                                .text,
-                                            "password": loginelements[1]
-                                                .controller
-                                                .text,
-                                          });
+                                      Map result = await authFunction(
+                                          username:
+                                              loginelements[0].controller.text,
+                                          password:
+                                              loginelements[1].controller.text);
 
-                                      if (resp != null) {
-                                        if (resp != "UNAuthorized") {
-                                          await setuserinfo(data: [
-                                            resp['id'].toString(),
-                                            loginelements[0].controller.text,
-                                            resp['fullname']
-                                          ]);
-
-                                          Navigator.of(context)
-                                              .pushReplacementNamed(
-                                                  HomePage.routename);
-                                          errormsg = null;
-                                        } else {
-                                          setState(() {
-                                            errormsg =
-                                                "اسم المستخدم او كلمة المرور غير صحيحة";
-                                          });
-                                        }
-                                      } else {
+                                      if (result['result'] == "permit") {
                                         setState(() {
                                           errormsg =
                                               "اسم المستخدم او كلمة المرور غير صحيحة";
                                         });
+                                      } else if (result['result'] ==
+                                          "server_error") {
+                                        setState(() {
+                                          errormsg = "لا يمكن الوصول للمخدم";
+                                        });
+                                      } else {
+                                        await setuserinfo(data: [
+                                          result['result']['id'].toString(),
+                                          result['result']['username'],
+                                          result['result']['password'],
+                                          result['result']['fullname'],
+                                          result['result']['admin']
+                                        ]);
+                                        Navigator.of(context)
+                                            .pushReplacementNamed(
+                                                HomePage.routename);
+                                        errormsg = null;
                                       }
                                     }
                                   },
@@ -134,38 +123,27 @@ class _LogInPageState extends State<LogInPage> {
                             TextButton.icon(
                                 onPressed: () async {
                                   if (_formkey.currentState!.validate()) {
-                                    var resp = await requestpost(
-                                        endpoint: "auth",
-                                        body: {
-                                          "username":
-                                              loginelements[0].controller.text,
-                                          "password":
-                                              loginelements[1].controller.text,
-                                        });
+                                    Map result = await authFunction(
+                                        username:
+                                            loginelements[0].controller.text,
+                                        password:
+                                            loginelements[1].controller.text);
 
-                                    if (resp != null) {
-                                      if (resp != "UNAuthorized") {
-                                        await setuserinfo(data: [
-                                          resp['id'].toString(),
-                                          loginelements[0].controller.text,
-                                          resp['fullname']
-                                        ]);
-
-                                        Navigator.of(context)
-                                            .pushReplacementNamed(
-                                                HomePage.routename);
-                                        errormsg = null;
-                                      } else {
-                                        setState(() {
-                                          errormsg =
-                                              "اسم المستخدم او كلمة المرور غير صحيحة";
-                                        });
-                                      }
-                                    } else {
+                                    if (result['result'] == "UNAUTHORIZED") {
                                       setState(() {
                                         errormsg =
                                             "اسم المستخدم او كلمة المرور غير صحيحة";
                                       });
+                                    } else if (result['result'] ==
+                                        "server_error") {
+                                      setState(() {
+                                        errormsg = "لا يمكن الوصول للمخدم";
+                                      });
+                                    } else {
+                                      Navigator.of(context)
+                                          .pushReplacementNamed(
+                                              HomePage.routename);
+                                      errormsg = null;
                                     }
                                   }
                                 },

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mz_tak_app/controllers/accountsitemsProvider.dart';
+import 'package:mz_tak_app/controllers/auth_function.dart';
 import 'package:mz_tak_app/controllers/dailytasksProvider.dart';
 import 'package:mz_tak_app/controllers/dailytasksreportsProvider.dart';
 import 'package:mz_tak_app/controllers/helpsItemsProvider.dart';
 import 'package:mz_tak_app/controllers/remindsItemsProvider.dart';
 import 'package:mz_tak_app/controllers/shared_pref.dart';
+import 'package:mz_tak_app/pages/accounts/accounts.dart';
+import 'package:mz_tak_app/pages/accounts/accounts_edit.dart';
 import 'package:mz_tak_app/pages/dailytask/dailytasks.dart';
 import 'package:mz_tak_app/pages/dailytask/dailytasks_edit.dart';
 import 'package:mz_tak_app/pages/dailytasksreports/dailytasksreports.dart';
@@ -26,21 +30,34 @@ main() {
       ChangeNotifierProvider(create: (_) => HelpsListProvider()),
       ChangeNotifierProvider(create: (_) => DailyTasksListProvider()),
       ChangeNotifierProvider(create: (_) => DailyTasksReportsListProvider()),
+      ChangeNotifierProvider(create: (_) => AccountsListProvider()),
     ],
     child: MzApp(),
   ));
 }
 
 class MzApp extends StatelessWidget {
-  const MzApp({super.key});
-
+  MzApp({super.key});
+  bool autologin = false;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: Future(
         () async {
           userinfosharedpref = await SharedPreferences.getInstance();
-          print(userinfosharedpref!.getStringList("userinfo"));
+          List<String>? userinfo =
+              userinfosharedpref!.getStringList("userinfo");
+          if (userinfo != null) {
+            Map result = await authFunction(
+                username: userinfo[1], password: userinfo[2]);
+
+            if (result['result'] == "UNAUTHORIZED") {
+              autologin = false;
+              userinfosharedpref!.remove("userinfo");
+            } else if (result['result'] != "server_error") {
+              autologin = true;
+            }
+          }
         },
       ),
       builder: (_, s) {
@@ -50,10 +67,7 @@ class MzApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             initialRoute: '/',
             routes: {
-              '/': (context) => userinfosharedpref != null &&
-                      userinfosharedpref!.getStringList("userinfo") == null
-                  ? LogInPage()
-                  : HomePage(),
+              '/': (context) => autologin ? HomePage() : LogInPage(),
               HomePage.routename: (context) => HomePage(),
               Reminds.routename: (context) => Reminds(),
               RemindsEdit.routename: (context) => RemindsEdit(),
@@ -65,7 +79,9 @@ class MzApp extends StatelessWidget {
               DailyTasksReportsEdit.routename: (context) =>
                   DailyTasksReportsEdit(),
               PBXHomePage.routename: (context) => PBXHomePage(),
-              RealTimePBX.routename: (context) => RealTimePBX()
+              RealTimePBX.routename: (context) => RealTimePBX(),
+              Accounts.routename: (context) => Accounts(),
+              AccountsEdit.routename: (context) => AccountsEdit()
             },
           ),
         );

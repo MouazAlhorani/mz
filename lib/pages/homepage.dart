@@ -2,12 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mz_tak_app/controllers/requestpost.dart';
 import 'package:mz_tak_app/controllers/shared_pref.dart';
 import 'package:mz_tak_app/models/mainitem_model.dart';
+import 'package:mz_tak_app/pages/accounts/accounts.dart';
 import 'package:mz_tak_app/pages/dailytask/dailytasks.dart';
 import 'package:mz_tak_app/pages/dailytasksreports/dailytasksreports.dart';
 import 'package:mz_tak_app/pages/help/helps.dart';
-import 'package:mz_tak_app/pages/help/helps_edit.dart';
 import 'package:mz_tak_app/pages/pbx/pbx_homepage.dart';
 import 'package:mz_tak_app/pages/reminder/reminds.dart';
 import 'package:mz_tak_app/widgets/appBarbackground.dart';
@@ -24,6 +25,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<MainItem> mainitems = [
+    MainItem(
+      label: "الحسابات",
+      icon: Icons.stacked_line_chart,
+      url: Accounts.routename,
+    ),
     MainItem(
       label: "تقارير المقسم",
       icon: Icons.stacked_line_chart,
@@ -69,14 +75,11 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Visibility(
                       visible: logouthover,
-                      child: Text(
-                        userinfosharedpref != null &&
-                                userinfosharedpref!.getStringList("userinfo") !=
-                                    null
-                            ? userinfosharedpref!.getStringList("userinfo")![2]
-                            : "",
-                        style: GoogleFonts.elMessiri(fontSize: 20),
-                      )),
+                      child: Text(userinfosharedpref != null &&
+                              userinfosharedpref!.getStringList("userinfo") !=
+                                  null
+                          ? userinfosharedpref!.getStringList("userinfo")![3]
+                          : "")),
                   MouseRegion(
                     onHover: (event) => setState(() {
                       logouthover = true;
@@ -87,6 +90,10 @@ class _HomePageState extends State<HomePage> {
                     child: IconButton(
                         onPressed: () async {
                           if (userinfosharedpref != null) {
+                            await requestpost(endpoint: "auth/logout", body: {
+                              "id": userinfosharedpref!
+                                  .getStringList("userinfo")![0]
+                            });
                             userinfosharedpref!.remove("userinfo");
                           }
                           Navigator.of(context).pushReplacementNamed('/');

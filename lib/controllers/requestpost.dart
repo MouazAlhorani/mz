@@ -8,12 +8,7 @@ Future? requestpost({endpoint, params, body}) async {
       Uri.http(kmainapipath, "/mz/api/$endpoint/", params),
       body: body,
     );
-
-    if (resp.statusCode == 200) {
-      return jsonDecode(utf8.decode(resp.bodyBytes))['result'];
-    } else {
-      return null;
-    }
+    return jsonDecode(utf8.decode(resp.bodyBytes))['result'];
   } catch (e) {
     print(e);
   }
